@@ -1,7 +1,14 @@
 import { useEditorStore } from '../store/useEditorStore';
 
 export const Sidebar = () => {
-  const { pages, activePageId, addPage, setActivePage, selectedElementId } = useEditorStore();
+  // ⚡ Bolt Performance Optimization:
+  // Using selector functions instead of destructuring to prevent unnecessary
+  // re-renders when other unrelated parts of the Zustand store change.
+  const pages = useEditorStore((state) => state.pages);
+  const activePageId = useEditorStore((state) => state.activePageId);
+  const addPage = useEditorStore((state) => state.addPage);
+  const setActivePage = useEditorStore((state) => state.setActivePage);
+  const selectedElementId = useEditorStore((state) => state.selectedElementId);
 
   return (
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm">
