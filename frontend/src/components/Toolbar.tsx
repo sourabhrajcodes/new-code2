@@ -3,7 +3,11 @@ import { useEditorStore } from '../store/useEditorStore';
 import type { TextElement } from '../types';
 
 export const Toolbar = () => {
-  const { addElement, activePageId } = useEditorStore();
+  // ⚡ Bolt Performance Optimization:
+  // Using selector functions instead of destructuring to prevent unnecessary
+  // re-renders when other unrelated parts of the Zustand store change.
+  const addElement = useEditorStore((state) => state.addElement);
+  const activePageId = useEditorStore((state) => state.activePageId);
 
   const handleAddText = () => {
     if (!activePageId) return;

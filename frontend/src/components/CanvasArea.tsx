@@ -74,7 +74,15 @@ const ElementWrapper: React.FC<ElementWrapperProps> = ({ element, isSelected, on
 };
 
 export const CanvasArea = () => {
-  const { pages, activePageId, selectedElementId, selectElement, updateElement } = useEditorStore();
+  // ⚡ Bolt Performance Optimization:
+  // Using selector functions instead of destructuring to prevent unnecessary
+  // re-renders when other unrelated parts of the Zustand store change.
+  // This is especially critical in CanvasArea to avoid whole-canvas re-renders during dragging.
+  const pages = useEditorStore((state) => state.pages);
+  const activePageId = useEditorStore((state) => state.activePageId);
+  const selectedElementId = useEditorStore((state) => state.selectedElementId);
+  const selectElement = useEditorStore((state) => state.selectElement);
+  const updateElement = useEditorStore((state) => state.updateElement);
 
   const activePage = pages.find(p => p.id === activePageId) || pages[0];
   const [scale] = useState(1);
