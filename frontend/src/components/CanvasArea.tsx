@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Stage, Layer, Rect, Text, Transformer } from 'react-konva';
 import { useEditorStore } from '../store/useEditorStore';
+import { useShallow } from 'zustand/react/shallow';
 import type { TextElement, PageElement } from '../types';
 
 interface ElementWrapperProps {
@@ -74,7 +75,17 @@ const ElementWrapper: React.FC<ElementWrapperProps> = ({ element, isSelected, on
 };
 
 export const CanvasArea = () => {
-  const { pages, activePageId, selectedElementId, selectElement, updateElement } = useEditorStore();
+  // ⚡ Bolt Optimization: Using useShallow avoids full component re-renders
+  // when unrelated properties in the store change, maintaining 60fps during canvas interactions.
+  const { pages, activePageId, selectedElementId, selectElement, updateElement } = useEditorStore(
+    useShallow((state) => ({
+      pages: state.pages,
+      activePageId: state.activePageId,
+      selectedElementId: state.selectedElementId,
+      selectElement: state.selectElement,
+      updateElement: state.updateElement,
+    }))
+  );
 
   const activePage = pages.find(p => p.id === activePageId) || pages[0];
   const [scale] = useState(1);
