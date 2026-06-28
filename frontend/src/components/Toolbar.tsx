@@ -1,9 +1,17 @@
 import { Type, Table, Download, Save, Undo, Redo, LayoutTemplate } from 'lucide-react';
 import { useEditorStore } from '../store/useEditorStore';
+import { useShallow } from 'zustand/react/shallow';
 import type { TextElement } from '../types';
 
 export const Toolbar = () => {
-  const { addElement, activePageId } = useEditorStore();
+  // ⚡ Bolt Optimization: Using useShallow prevents Toolbar from re-rendering
+  // on every canvas element update (e.g. dragging an element), reducing main thread work.
+  const { addElement, activePageId } = useEditorStore(
+    useShallow((state) => ({
+      addElement: state.addElement,
+      activePageId: state.activePageId,
+    }))
+  );
 
   const handleAddText = () => {
     if (!activePageId) return;

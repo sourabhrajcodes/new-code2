@@ -1,7 +1,18 @@
 import { useEditorStore } from '../store/useEditorStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export const Sidebar = () => {
-  const { pages, activePageId, addPage, setActivePage, selectedElementId } = useEditorStore();
+  // ⚡ Bolt Optimization: Using useShallow prevents Sidebar from re-rendering
+  // when an element is dragged or updated, improving UI responsiveness.
+  const { pages, activePageId, addPage, setActivePage, selectedElementId } = useEditorStore(
+    useShallow((state) => ({
+      pages: state.pages,
+      activePageId: state.activePageId,
+      addPage: state.addPage,
+      setActivePage: state.setActivePage,
+      selectedElementId: state.selectedElementId,
+    }))
+  );
 
   return (
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm">
