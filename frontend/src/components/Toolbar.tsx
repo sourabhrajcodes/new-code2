@@ -3,7 +3,9 @@ import { useEditorStore } from '../store/useEditorStore';
 import type { TextElement } from '../types';
 
 export const Toolbar = () => {
-  const { addElement, activePageId } = useEditorStore();
+  // Optimization: use granular selectors to prevent unnecessary re-renders when other state properties change
+  const addElement = useEditorStore(state => state.addElement);
+  const activePageId = useEditorStore(state => state.activePageId);
 
   const handleAddText = () => {
     if (!activePageId) return;
