@@ -3,7 +3,11 @@ import { useEditorStore } from '../store/useEditorStore';
 import type { TextElement } from '../types';
 
 export const Toolbar = () => {
-  const { addElement, activePageId } = useEditorStore();
+  // ⚡ BOLT OPTIMIZATION: Use granular selectors for Zustand state instead of destructuring the entire state object.
+  // This prevents unnecessary re-renders when other un-related state properties change.
+  // Expected measurable impact: Eliminates unnecessary re-renders of the Toolbar component when unrelated state changes.
+  const addElement = useEditorStore(state => state.addElement);
+  const activePageId = useEditorStore(state => state.activePageId);
 
   const handleAddText = () => {
     if (!activePageId) return;

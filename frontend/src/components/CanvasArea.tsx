@@ -10,7 +10,10 @@ interface ElementWrapperProps {
   onChange: (newAttrs: Partial<PageElement>) => void;
 }
 
-const ElementWrapper: React.FC<ElementWrapperProps> = ({ element, isSelected, onSelect, onChange }) => {
+// ⚡ BOLT OPTIMIZATION: Wrap ElementWrapper in React.memo
+// Prevents O(N) re-renders of all canvas elements when a single element is moved or selected.
+// Expected measurable impact: Drastically reduces CPU time and frame drops during drag/drop or selection in documents with many elements.
+const ElementWrapper: React.FC<ElementWrapperProps> = React.memo(({ element, isSelected, onSelect, onChange }) => {
   const shapeRef = useRef<any>(null);
   const trRef = useRef<any>(null);
 
@@ -71,10 +74,17 @@ const ElementWrapper: React.FC<ElementWrapperProps> = ({ element, isSelected, on
 
   // Placeholder for tables
   return null;
-};
+});
 
 export const CanvasArea = () => {
-  const { pages, activePageId, selectedElementId, selectElement, updateElement } = useEditorStore();
+  // ⚡ BOLT OPTIMIZATION: Use granular selectors for Zustand state instead of destructuring the entire state object.
+  // This prevents unnecessary re-renders when other un-related state properties change.
+  // Expected measurable impact: Eliminates unnecessary re-renders of the CanvasArea component when unrelated state changes.
+  const pages = useEditorStore(state => state.pages);
+  const activePageId = useEditorStore(state => state.activePageId);
+  const selectedElementId = useEditorStore(state => state.selectedElementId);
+  const selectElement = useEditorStore(state => state.selectElement);
+  const updateElement = useEditorStore(state => state.updateElement);
 
   const activePage = pages.find(p => p.id === activePageId) || pages[0];
   const [scale] = useState(1);
