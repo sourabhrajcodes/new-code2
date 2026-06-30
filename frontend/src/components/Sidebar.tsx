@@ -1,7 +1,14 @@
 import { useEditorStore } from '../store/useEditorStore';
 
 export const Sidebar = () => {
-  const { pages, activePageId, addPage, setActivePage, selectedElementId } = useEditorStore();
+  // ⚡ BOLT OPTIMIZATION: Use granular selectors for Zustand state instead of destructuring the entire state object.
+  // This prevents unnecessary re-renders when other un-related state properties change.
+  // Expected measurable impact: Eliminates unnecessary re-renders of the Sidebar component when unrelated state changes.
+  const pages = useEditorStore(state => state.pages);
+  const activePageId = useEditorStore(state => state.activePageId);
+  const addPage = useEditorStore(state => state.addPage);
+  const setActivePage = useEditorStore(state => state.setActivePage);
+  const selectedElementId = useEditorStore(state => state.selectedElementId);
 
   return (
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm">

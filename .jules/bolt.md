@@ -1,0 +1,3 @@
+## 2024-06-30 - Granular Zustand Selectors and Konva Performance
+**Learning:** Destructuring the entire Zustand state object (e.g., `const { a, b } = useStore()`) inside React components causes the component to re-render whenever *any* state in the store changes, rather than just the properties being used. Furthermore, in React Konva applications, updating a single property on one canvas element can trigger O(N) re-renders for all elements on the canvas unless wrapped properly.
+**Action:** Always use granular selectors (e.g., `const a = useStore(state => state.a)`) instead of destructuring the state object. Always wrap list items, especially Konva canvas elements (`ElementWrapper`), in `React.memo` to prevent O(N) re-renders when a single element updates.
