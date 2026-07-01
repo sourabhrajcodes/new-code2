@@ -1,0 +1,3 @@
+## 2024-05-24 - Zustand Destructuring & Konva List Re-renders
+**Learning:** Destructuring the entire state object from a Zustand store (e.g., `const { a, b } = useStore()`) forces components to re-render whenever *any* state in the store changes, even if the destructured properties haven't changed. Also, rendering lists of complex Konva elements without `React.memo` causes O(N) re-renders when a single element updates, which severely degrades performance on large canvases.
+**Action:** Always use granular selectors for Zustand state (e.g., `useStore(state => state.property)`). Wrap complex list items like Konva canvas elements in `React.memo` with custom comparison functions to avoid O(N) re-renders.

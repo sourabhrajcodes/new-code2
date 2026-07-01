@@ -3,7 +3,9 @@ import { useEditorStore } from '../store/useEditorStore';
 import type { TextElement } from '../types';
 
 export const Toolbar = () => {
-  const { addElement, activePageId } = useEditorStore();
+  // ⚡ Bolt Performance: Use granular selectors to prevent unnecessary re-renders when other state changes
+  const addElement = useEditorStore(state => state.addElement);
+  const activePageId = useEditorStore(state => state.activePageId);
 
   const handleAddText = () => {
     if (!activePageId) return;
