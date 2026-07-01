@@ -1,7 +1,12 @@
 import { useEditorStore } from '../store/useEditorStore';
 
 export const Sidebar = () => {
-  const { pages, activePageId, addPage, setActivePage, selectedElementId } = useEditorStore();
+  // ⚡ Bolt Performance: Use granular selectors to prevent unnecessary re-renders when other state changes
+  const pages = useEditorStore(state => state.pages);
+  const activePageId = useEditorStore(state => state.activePageId);
+  const addPage = useEditorStore(state => state.addPage);
+  const setActivePage = useEditorStore(state => state.setActivePage);
+  const selectedElementId = useEditorStore(state => state.selectedElementId);
 
   return (
     <div className="w-64 bg-white border-r flex flex-col h-full shadow-sm">

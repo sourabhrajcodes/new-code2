@@ -10,7 +10,9 @@ interface ElementWrapperProps {
   onChange: (newAttrs: Partial<PageElement>) => void;
 }
 
-const ElementWrapper: React.FC<ElementWrapperProps> = ({ element, isSelected, onSelect, onChange }) => {
+// ⚡ Bolt Performance: Wrap complex list items like Konva canvas elements in React.memo
+// with custom comparison functions to avoid O(N) re-renders when a single element updates.
+const ElementWrapper = React.memo<ElementWrapperProps>(({ element, isSelected, onSelect, onChange }) => {
   const shapeRef = useRef<any>(null);
   const trRef = useRef<any>(null);
 
@@ -71,10 +73,22 @@ const ElementWrapper: React.FC<ElementWrapperProps> = ({ element, isSelected, on
 
   // Placeholder for tables
   return null;
-};
+}, (prevProps, nextProps) => {
+  // Only re-render if the element data changes or selection status changes.
+  // Ignore inline callbacks (onSelect, onChange) unless the relevant data has changed.
+  return (
+    prevProps.element === nextProps.element &&
+    prevProps.isSelected === nextProps.isSelected
+  );
+});
 
 export const CanvasArea = () => {
-  const { pages, activePageId, selectedElementId, selectElement, updateElement } = useEditorStore();
+  // ⚡ Bolt Performance: Use granular selectors to prevent unnecessary re-renders when other state changes
+  const pages = useEditorStore(state => state.pages);
+  const activePageId = useEditorStore(state => state.activePageId);
+  const selectedElementId = useEditorStore(state => state.selectedElementId);
+  const selectElement = useEditorStore(state => state.selectElement);
+  const updateElement = useEditorStore(state => state.updateElement);
 
   const activePage = pages.find(p => p.id === activePageId) || pages[0];
   const [scale] = useState(1);
